@@ -1,9 +1,14 @@
 package com.example.security.controller;
 
+import com.example.security.dto.JwtResponse;
+import com.example.security.dto.LoginRequest;
 import com.example.security.entity.Customer;
 import com.example.security.service.CustomerService;
 import com.example.security.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
 
     @Autowired
+    @Lazy
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -32,24 +38,18 @@ public class CustomerController {
         return "fuck you";
 
     }
-    @PostMapping(path = "/login")
-  public String login(@RequestBody Customer customer){
-
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            Authentication authentication=authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(customer.getPassword(),customer.getName())
-
-            );
-            Customer customer1 = (Customer) authentication.getPrincipal();
-            return jwtTokenUtil.generateToken(customer1);
-        } catch (AuthenticationException e){
-            return "Invalid credentials!";
-
-
+            String token = customerService.login(loginRequest);
+            return ResponseEntity.ok(new JwtResponse(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-
-
     }
+
+
+
     @PostMapping(path = "/register")
     public String register(@RequestBody Customer customer) {
         // Check if user already exists

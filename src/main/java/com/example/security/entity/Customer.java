@@ -24,6 +24,6 @@ public class Customer {
 
 
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy ="customer", fetch = FetchType.EAGER)
     private Set<Authority> authorities;
 }
