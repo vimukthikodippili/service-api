@@ -1,0 +1,4 @@
+value keyclock link=http://localhost:8080/realms/test1/.well-known/openid-configuration
+to check postman token in keyclock use this path http://localhost:8080/realms/test1/protocol/openid-connect/token
+and body->x-ww.form0-> 4 parameters
+client id =abcd@ID client secret key scope=openid grant_type=client credential
